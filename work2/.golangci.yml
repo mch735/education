@@ -1,0 +1,12 @@
+linters:
+  enable-all: true  
+  disable:
+    - depguard
+    - tenv
+
+linters-settings:
+  varnamelen:
+    min-name-length: 2
+
+  govet:
+    enable-all: true
