@@ -10,3 +10,10 @@ linters-settings:
 
   govet:
     enable-all: true
+
+  gci:
+    sections:
+      - standard
+      - default      
+      - prefix(github.com/mch735/education/work2)
+    skip-generated: true

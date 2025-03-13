@@ -8,6 +8,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/google/uuid"
+
 	"github.com/mch735/education/work2/models/user"
 )
 
@@ -19,16 +21,15 @@ var (
 
 type UserService struct {
 	storage user.Repository
-	ids     int
 }
 
 func NewUserService(repo user.Repository) *UserService {
-	return &UserService{storage: repo, ids: 0}
+	return &UserService{storage: repo}
 }
 
 func (us *UserService) CreateUser(name, email, role string) (user.User, error) {
 	record := user.User{
-		ID:        us.id(),
+		ID:        uuid.New().String(),
 		Name:      name,
 		Email:     email,
 		Role:      role,
@@ -48,7 +49,7 @@ func (us *UserService) CreateUser(name, email, role string) (user.User, error) {
 	return record, nil
 }
 
-func (us *UserService) GetUser(id int) (user.User, error) {
+func (us *UserService) GetUser(id string) (user.User, error) {
 	record, err := us.storage.FindByID(id)
 	if err != nil {
 		return user.User{}, fmt.Errorf("user not found: %w", err)
@@ -57,7 +58,7 @@ func (us *UserService) GetUser(id int) (user.User, error) {
 	return record, nil
 }
 
-func (us *UserService) RemoveUser(id int) error {
+func (us *UserService) RemoveUser(id string) error {
 	err := us.storage.DeleteByID(id)
 	if err != nil {
 		return fmt.Errorf("user not removed: %w", err)
@@ -74,12 +75,6 @@ func (us *UserService) ListUsersWithRole(role string) []user.User {
 	return us.storage.FilterFunc(func(user user.User) bool {
 		return user.Role == role
 	})
-}
-
-func (us *UserService) id() int {
-	us.ids++
-
-	return us.ids
 }
 
 func (us *UserService) validate(user user.User) error {

@@ -1,23 +1,14 @@
 package storages
 
-import (
-	"errors"
-
-	"github.com/mch735/education/work2/models/user"
-)
-
-var (
-	ErrUserNotFound = errors.New("user not found")
-	ErrUserExist    = errors.New("user exist")
-)
+import "github.com/mch735/education/work2/models/user"
 
 type InMemoryUserRepo struct {
-	data map[int]user.User
+	data map[string]user.User
 }
 
 func NewInMemoryUserRepo() InMemoryUserRepo {
 	return InMemoryUserRepo{
-		data: make(map[int]user.User),
+		data: make(map[string]user.User),
 	}
 }
 
@@ -32,7 +23,7 @@ func (s InMemoryUserRepo) Save(user user.User) error {
 	return nil
 }
 
-func (s InMemoryUserRepo) FindByID(id int) (user.User, error) {
+func (s InMemoryUserRepo) FindByID(id string) (user.User, error) {
 	result, exist := s.data[id]
 	if !exist {
 		return user.User{}, ErrUserNotFound
@@ -41,7 +32,7 @@ func (s InMemoryUserRepo) FindByID(id int) (user.User, error) {
 	return result, nil
 }
 
-func (s InMemoryUserRepo) DeleteByID(id int) error {
+func (s InMemoryUserRepo) DeleteByID(id string) error {
 	_, exist := s.data[id]
 	if !exist {
 		return ErrUserNotFound

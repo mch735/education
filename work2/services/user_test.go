@@ -27,12 +27,9 @@ func TestUserServiceValidateError(t *testing.T) {
 func TestUserServiceSaveError(t *testing.T) {
 	t.Parallel()
 
-	repo := storages.NewInMemoryUserRepo()
+	repo := storages.NewMockErrorUserRepo()
 
 	_, err := services.NewUserService(repo).CreateUser("Test", "1@1.com", "admin")
-	require.NoError(t, err)
-
-	_, err = services.NewUserService(repo).CreateUser("Test", "2@2.com", "user")
 	require.ErrorIs(t, err, storages.ErrUserExist)
 }
 
@@ -42,16 +39,9 @@ func TestUserServiceSave(t *testing.T) {
 	service := services.NewUserService(storages.NewInMemoryUserRepo())
 
 	record, _ := service.CreateUser("Test", "1@1.com", "user")
-	require.Equal(t, 1, record.ID)
 	require.Equal(t, "Test", record.Name)
 	require.Equal(t, "1@1.com", record.Email)
 	require.Equal(t, "user", record.Role)
-
-	record, _ = service.CreateUser("Test", "2@2.com", "admin")
-	require.Equal(t, 2, record.ID)
-	require.Equal(t, "Test", record.Name)
-	require.Equal(t, "2@2.com", record.Email)
-	require.Equal(t, "admin", record.Role)
 }
 
 func TestUserServiceGetUserError(t *testing.T) {
@@ -59,7 +49,7 @@ func TestUserServiceGetUserError(t *testing.T) {
 
 	service := services.NewUserService(storages.NewInMemoryUserRepo())
 
-	_, err := service.GetUser(10)
+	_, err := service.GetUser("10")
 	require.ErrorIs(t, err, storages.ErrUserNotFound)
 }
 
@@ -81,7 +71,7 @@ func TestUserServiceRemoveUserError(t *testing.T) {
 
 	service := services.NewUserService(storages.NewInMemoryUserRepo())
 
-	err := service.RemoveUser(10)
+	err := service.RemoveUser("10")
 	require.ErrorIs(t, err, storages.ErrUserNotFound)
 }
 
