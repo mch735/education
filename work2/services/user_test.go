@@ -3,16 +3,19 @@ package services_test
 import (
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	"github.com/mch735/education/work2/models/user"
 	"github.com/mch735/education/work2/services"
 	"github.com/mch735/education/work2/storages"
-	"github.com/stretchr/testify/require"
+	"github.com/mch735/education/work2/storages/memory"
+	"github.com/mch735/education/work2/storages/mock"
 )
 
 func TestUserServiceValidateError(t *testing.T) {
 	t.Parallel()
 
-	service := services.NewUserService(storages.NewInMemoryUserRepo())
+	service := services.NewUserService(memory.NewInMemoryUserRepo())
 
 	_, err := service.CreateUser("Test", "1@1.com", "qwe")
 	require.ErrorIs(t, err, services.ErrInvalidRole)
@@ -27,7 +30,7 @@ func TestUserServiceValidateError(t *testing.T) {
 func TestUserServiceSaveError(t *testing.T) {
 	t.Parallel()
 
-	repo := storages.NewMockErrorUserRepo()
+	repo := mock.NewMockErrorUserRepo()
 
 	_, err := services.NewUserService(repo).CreateUser("Test", "1@1.com", "admin")
 	require.ErrorIs(t, err, storages.ErrUserExist)
@@ -36,7 +39,7 @@ func TestUserServiceSaveError(t *testing.T) {
 func TestUserServiceSave(t *testing.T) {
 	t.Parallel()
 
-	service := services.NewUserService(storages.NewInMemoryUserRepo())
+	service := services.NewUserService(memory.NewInMemoryUserRepo())
 
 	record, _ := service.CreateUser("Test", "1@1.com", "user")
 	require.Equal(t, "Test", record.Name)
@@ -47,7 +50,7 @@ func TestUserServiceSave(t *testing.T) {
 func TestUserServiceGetUserError(t *testing.T) {
 	t.Parallel()
 
-	service := services.NewUserService(storages.NewInMemoryUserRepo())
+	service := services.NewUserService(memory.NewInMemoryUserRepo())
 
 	_, err := service.GetUser("10")
 	require.ErrorIs(t, err, storages.ErrUserNotFound)
@@ -56,7 +59,7 @@ func TestUserServiceGetUserError(t *testing.T) {
 func TestUserServiceGetUser(t *testing.T) {
 	t.Parallel()
 
-	service := services.NewUserService(storages.NewInMemoryUserRepo())
+	service := services.NewUserService(memory.NewInMemoryUserRepo())
 
 	expect, err := service.CreateUser("Test", "1@1.com", "user")
 	require.NoError(t, err)
@@ -69,7 +72,7 @@ func TestUserServiceGetUser(t *testing.T) {
 func TestUserServiceRemoveUserError(t *testing.T) {
 	t.Parallel()
 
-	service := services.NewUserService(storages.NewInMemoryUserRepo())
+	service := services.NewUserService(memory.NewInMemoryUserRepo())
 
 	err := service.RemoveUser("10")
 	require.ErrorIs(t, err, storages.ErrUserNotFound)
@@ -78,7 +81,7 @@ func TestUserServiceRemoveUserError(t *testing.T) {
 func TestUserServiceRemoveUser(t *testing.T) {
 	t.Parallel()
 
-	service := services.NewUserService(storages.NewInMemoryUserRepo())
+	service := services.NewUserService(memory.NewInMemoryUserRepo())
 
 	expect, err := service.CreateUser("Test", "1@1.com", "user")
 	require.NoError(t, err)
@@ -92,7 +95,7 @@ func TestUserServiceRemoveUser(t *testing.T) {
 func TestUserServiceListUsers(t *testing.T) {
 	t.Parallel()
 
-	service := services.NewUserService(storages.NewInMemoryUserRepo())
+	service := services.NewUserService(memory.NewInMemoryUserRepo())
 
 	record1, err := service.CreateUser("Test", "1@1.com", "admin")
 	require.NoError(t, err)
@@ -100,13 +103,13 @@ func TestUserServiceListUsers(t *testing.T) {
 	record2, err := service.CreateUser("Test", "2@2.com", "user")
 	require.NoError(t, err)
 
-	require.Equal(t, []user.User{record1, record2}, service.ListUsers())
+	require.Equal(t, []*user.User{record1, record2}, service.ListUsers())
 }
 
 func TestUserServiceListUsersWithRole(t *testing.T) {
 	t.Parallel()
 
-	service := services.NewUserService(storages.NewInMemoryUserRepo())
+	service := services.NewUserService(memory.NewInMemoryUserRepo())
 
 	record1, err := service.CreateUser("Test", "1@1.com", "admin")
 	require.NoError(t, err)
@@ -114,6 +117,6 @@ func TestUserServiceListUsersWithRole(t *testing.T) {
 	record2, err := service.CreateUser("Test", "2@2.com", "user")
 	require.NoError(t, err)
 
-	require.Equal(t, []user.User{record1}, service.ListUsersWithRole("admin"))
-	require.Equal(t, []user.User{record2}, service.ListUsersWithRole("user"))
+	require.Equal(t, []*user.User{record1}, service.ListUsersWithRole("admin"))
+	require.Equal(t, []*user.User{record2}, service.ListUsersWithRole("user"))
 }

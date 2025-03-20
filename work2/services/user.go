@@ -19,16 +19,24 @@ var (
 	ErrInvalidEmail = errors.New("invalid email")
 )
 
-type UserService struct {
-	storage user.Repository
+type UserRepository interface {
+	Save(user *user.User) error
+	FindByID(id string) (*user.User, error)
+	FindAll() []*user.User
+	DeleteByID(id string) error
+	FilterFunc(fun func(user *user.User) bool) []*user.User
 }
 
-func NewUserService(repo user.Repository) *UserService {
+type UserService struct {
+	storage UserRepository
+}
+
+func NewUserService(repo UserRepository) *UserService {
 	return &UserService{storage: repo}
 }
 
-func (us *UserService) CreateUser(name, email, role string) (user.User, error) {
-	record := user.User{
+func (us *UserService) CreateUser(name, email, role string) (*user.User, error) {
+	record := &user.User{
 		ID:        uuid.New().String(),
 		Name:      name,
 		Email:     email,
@@ -38,21 +46,21 @@ func (us *UserService) CreateUser(name, email, role string) (user.User, error) {
 
 	err := us.validate(record)
 	if err != nil {
-		return user.User{}, fmt.Errorf("user not valid: %w", err)
+		return nil, fmt.Errorf("user not valid: %w", err)
 	}
 
 	err = us.storage.Save(record)
 	if err != nil {
-		return user.User{}, fmt.Errorf("user not created: %w", err)
+		return nil, fmt.Errorf("user not created: %w", err)
 	}
 
 	return record, nil
 }
 
-func (us *UserService) GetUser(id string) (user.User, error) {
+func (us *UserService) GetUser(id string) (*user.User, error) {
 	record, err := us.storage.FindByID(id)
 	if err != nil {
-		return user.User{}, fmt.Errorf("user not found: %w", err)
+		return nil, fmt.Errorf("user not found: %w", err)
 	}
 
 	return record, nil
@@ -67,17 +75,17 @@ func (us *UserService) RemoveUser(id string) error {
 	return nil
 }
 
-func (us *UserService) ListUsers() []user.User {
+func (us *UserService) ListUsers() []*user.User {
 	return us.storage.FindAll()
 }
 
-func (us *UserService) ListUsersWithRole(role string) []user.User {
-	return us.storage.FilterFunc(func(user user.User) bool {
+func (us *UserService) ListUsersWithRole(role string) []*user.User {
+	return us.storage.FilterFunc(func(user *user.User) bool {
 		return user.Role == role
 	})
 }
 
-func (us *UserService) validate(user user.User) error {
+func (us *UserService) validate(user *user.User) error {
 	roles := []string{"admin", "user", "guest"}
 
 	exist := slices.Contains(roles, user.Role)
