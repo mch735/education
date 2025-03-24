@@ -5,12 +5,12 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/mch735/education/work3/api/middlewares"
-	"github.com/mch735/education/work3/api/router"
-	"github.com/mch735/education/work3/api/server"
 	"github.com/mch735/education/work3/internal/config"
 	"github.com/mch735/education/work3/internal/logger"
 	"github.com/mch735/education/work3/internal/util"
+	"github.com/mch735/education/work3/internal/web/middlewares"
+	"github.com/mch735/education/work3/internal/web/router"
+	"github.com/mch735/education/work3/internal/web/server"
 )
 
 func home(w http.ResponseWriter, _ *http.Request) {

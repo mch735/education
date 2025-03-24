@@ -3,7 +3,7 @@ package router
 import (
 	"net/http"
 
-	"github.com/mch735/education/work3/api/middlewares"
+	"github.com/mch735/education/work3/internal/web/middlewares"
 )
 
 type Router struct {

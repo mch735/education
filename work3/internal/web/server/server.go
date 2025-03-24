@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/mch735/education/work3/api/router"
 	"github.com/mch735/education/work3/internal/config"
 	"github.com/mch735/education/work3/internal/util"
+	"github.com/mch735/education/work3/internal/web/router"
 )
 
 const (
