@@ -1,45 +1,44 @@
-package services_test
+package user_test
 
 import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/mch735/education/work2/models/user"
-	"github.com/mch735/education/work2/services"
 	"github.com/mch735/education/work2/storages"
 	"github.com/mch735/education/work2/storages/memory"
 	"github.com/mch735/education/work2/storages/mock"
+	"github.com/mch735/education/work2/user"
 )
 
 func TestUserServiceValidateError(t *testing.T) {
 	t.Parallel()
 
-	service := services.NewUserService(memory.NewInMemoryUserRepo())
+	service := user.NewService(memory.NewUserRepo())
 
 	_, err := service.CreateUser("Test", "1@1.com", "qwe")
-	require.ErrorIs(t, err, services.ErrInvalidRole)
+	require.ErrorIs(t, err, user.ErrInvalidRole)
 
 	_, err = service.CreateUser("Test", "example.com", "admin")
-	require.ErrorIs(t, err, services.ErrInvalidEmail)
+	require.ErrorIs(t, err, user.ErrInvalidEmail)
 
 	_, err = service.CreateUser("", "1@1.com", "user")
-	require.ErrorIs(t, err, services.ErrInvalidName)
+	require.ErrorIs(t, err, user.ErrInvalidName)
 }
 
 func TestUserServiceSaveError(t *testing.T) {
 	t.Parallel()
 
-	repo := mock.NewMockErrorUserRepo()
+	repo := mock.NewErrorUserRepo()
 
-	_, err := services.NewUserService(repo).CreateUser("Test", "1@1.com", "admin")
+	_, err := user.NewService(repo).CreateUser("Test", "1@1.com", "admin")
 	require.ErrorIs(t, err, storages.ErrUserExist)
 }
 
 func TestUserServiceSave(t *testing.T) {
 	t.Parallel()
 
-	service := services.NewUserService(memory.NewInMemoryUserRepo())
+	service := user.NewService(memory.NewUserRepo())
 
 	record, _ := service.CreateUser("Test", "1@1.com", "user")
 	require.Equal(t, "Test", record.Name)
@@ -50,7 +49,7 @@ func TestUserServiceSave(t *testing.T) {
 func TestUserServiceGetUserError(t *testing.T) {
 	t.Parallel()
 
-	service := services.NewUserService(memory.NewInMemoryUserRepo())
+	service := user.NewService(memory.NewUserRepo())
 
 	_, err := service.GetUser("10")
 	require.ErrorIs(t, err, storages.ErrUserNotFound)
@@ -59,7 +58,7 @@ func TestUserServiceGetUserError(t *testing.T) {
 func TestUserServiceGetUser(t *testing.T) {
 	t.Parallel()
 
-	service := services.NewUserService(memory.NewInMemoryUserRepo())
+	service := user.NewService(memory.NewUserRepo())
 
 	expect, err := service.CreateUser("Test", "1@1.com", "user")
 	require.NoError(t, err)
@@ -72,7 +71,7 @@ func TestUserServiceGetUser(t *testing.T) {
 func TestUserServiceRemoveUserError(t *testing.T) {
 	t.Parallel()
 
-	service := services.NewUserService(memory.NewInMemoryUserRepo())
+	service := user.NewService(memory.NewUserRepo())
 
 	err := service.RemoveUser("10")
 	require.ErrorIs(t, err, storages.ErrUserNotFound)
@@ -81,7 +80,7 @@ func TestUserServiceRemoveUserError(t *testing.T) {
 func TestUserServiceRemoveUser(t *testing.T) {
 	t.Parallel()
 
-	service := services.NewUserService(memory.NewInMemoryUserRepo())
+	service := user.NewService(memory.NewUserRepo())
 
 	expect, err := service.CreateUser("Test", "1@1.com", "user")
 	require.NoError(t, err)
@@ -95,7 +94,7 @@ func TestUserServiceRemoveUser(t *testing.T) {
 func TestUserServiceListUsers(t *testing.T) {
 	t.Parallel()
 
-	service := services.NewUserService(memory.NewInMemoryUserRepo())
+	service := user.NewService(memory.NewUserRepo())
 
 	record1, err := service.CreateUser("Test", "1@1.com", "admin")
 	require.NoError(t, err)
@@ -109,7 +108,7 @@ func TestUserServiceListUsers(t *testing.T) {
 func TestUserServiceListUsersWithRole(t *testing.T) {
 	t.Parallel()
 
-	service := services.NewUserService(memory.NewInMemoryUserRepo())
+	service := user.NewService(memory.NewUserRepo())
 
 	record1, err := service.CreateUser("Test", "1@1.com", "admin")
 	require.NoError(t, err)

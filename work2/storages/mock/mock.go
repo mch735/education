@@ -3,23 +3,23 @@ package mock
 import (
 	"log"
 
-	"github.com/mch735/education/work2/models/user"
 	"github.com/mch735/education/work2/storages"
+	"github.com/mch735/education/work2/user"
 )
 
-type MockUserRepo struct {
+type UserRepo struct {
 	fail bool
 }
 
-func NewMockSuccessUserRepo() *MockUserRepo {
-	return &MockUserRepo{false}
+func NewSuccessUserRepo() *UserRepo {
+	return &UserRepo{false}
 }
 
-func NewMockErrorUserRepo() *MockUserRepo {
-	return &MockUserRepo{true}
+func NewErrorUserRepo() *UserRepo {
+	return &UserRepo{true}
 }
 
-func (s MockUserRepo) Save(user *user.User) error {
+func (s *UserRepo) Save(user *user.User) error {
 	log.Printf("Save user: %v\n", user)
 
 	if s.fail {
@@ -29,7 +29,7 @@ func (s MockUserRepo) Save(user *user.User) error {
 	return nil
 }
 
-func (s MockUserRepo) FindByID(id string) (*user.User, error) {
+func (s *UserRepo) FindByID(id string) (*user.User, error) {
 	log.Printf("Find user by id: %s\n", id)
 
 	if s.fail {
@@ -39,7 +39,7 @@ func (s MockUserRepo) FindByID(id string) (*user.User, error) {
 	return &user.User{}, nil //nolint:exhaustruct
 }
 
-func (s MockUserRepo) DeleteByID(id string) error {
+func (s *UserRepo) DeleteByID(id string) error {
 	log.Printf("Delete user by id: %s\n", id)
 
 	if s.fail {
@@ -49,14 +49,18 @@ func (s MockUserRepo) DeleteByID(id string) error {
 	return nil
 }
 
-func (s MockUserRepo) FindAll() []*user.User {
+func (s *UserRepo) FindAll() []*user.User {
 	log.Printf("Find all users\n")
 
 	return []*user.User{}
 }
 
-func (s MockUserRepo) FilterFunc(_ func(user *user.User) bool) []*user.User {
+func (s *UserRepo) FilterFunc(_ func(user *user.User) bool) []*user.User {
 	log.Printf("Filter users by func\n")
 
 	return []*user.User{}
+}
+
+func (s *UserRepo) Len() int {
+	return 0
 }

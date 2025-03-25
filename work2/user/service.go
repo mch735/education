@@ -1,4 +1,4 @@
-package services
+package user
 
 import (
 	"errors"
@@ -9,8 +9,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-
-	"github.com/mch735/education/work2/models/user"
 )
 
 var (
@@ -19,37 +17,37 @@ var (
 	ErrInvalidEmail = errors.New("invalid email")
 )
 
-type UserRepository interface {
-	Save(user *user.User) error
-	FindByID(id string) (*user.User, error)
-	FindAll() []*user.User
+type Repository interface {
+	Save(user *User) error
+	FindByID(id string) (*User, error)
+	FindAll() []*User
 	DeleteByID(id string) error
-	FilterFunc(fun func(user *user.User) bool) []*user.User
+	FilterFunc(fun func(user *User) bool) []*User
 }
 
-type UserService struct {
-	storage UserRepository
+type Service struct {
+	storage Repository
 }
 
-func NewUserService(repo UserRepository) *UserService {
-	return &UserService{storage: repo}
+func NewService(repo Repository) *Service {
+	return &Service{storage: repo}
 }
 
-func (us *UserService) CreateUser(name, email, role string) (*user.User, error) {
-	record := &user.User{
-		ID:        uuid.New().String(),
+func (s *Service) CreateUser(name, email, role string) (*User, error) {
+	record := &User{
+		ID:        uuid.NewString(),
 		Name:      name,
 		Email:     email,
 		Role:      role,
 		CreatedAt: time.Now(),
 	}
 
-	err := us.validate(record)
+	err := s.validate(record)
 	if err != nil {
 		return nil, fmt.Errorf("user not valid: %w", err)
 	}
 
-	err = us.storage.Save(record)
+	err = s.storage.Save(record)
 	if err != nil {
 		return nil, fmt.Errorf("user not created: %w", err)
 	}
@@ -57,8 +55,8 @@ func (us *UserService) CreateUser(name, email, role string) (*user.User, error) 
 	return record, nil
 }
 
-func (us *UserService) GetUser(id string) (*user.User, error) {
-	record, err := us.storage.FindByID(id)
+func (s *Service) GetUser(id string) (*User, error) {
+	record, err := s.storage.FindByID(id)
 	if err != nil {
 		return nil, fmt.Errorf("user not found: %w", err)
 	}
@@ -66,8 +64,8 @@ func (us *UserService) GetUser(id string) (*user.User, error) {
 	return record, nil
 }
 
-func (us *UserService) RemoveUser(id string) error {
-	err := us.storage.DeleteByID(id)
+func (s *Service) RemoveUser(id string) error {
+	err := s.storage.DeleteByID(id)
 	if err != nil {
 		return fmt.Errorf("user not removed: %w", err)
 	}
@@ -75,17 +73,17 @@ func (us *UserService) RemoveUser(id string) error {
 	return nil
 }
 
-func (us *UserService) ListUsers() []*user.User {
-	return us.storage.FindAll()
+func (s *Service) ListUsers() []*User {
+	return s.storage.FindAll()
 }
 
-func (us *UserService) ListUsersWithRole(role string) []*user.User {
-	return us.storage.FilterFunc(func(user *user.User) bool {
+func (s *Service) ListUsersWithRole(role string) []*User {
+	return s.storage.FilterFunc(func(user *User) bool {
 		return user.Role == role
 	})
 }
 
-func (us *UserService) validate(user *user.User) error {
+func (s *Service) validate(user *User) error {
 	roles := []string{"admin", "user", "guest"}
 
 	exist := slices.Contains(roles, user.Role)

@@ -1,21 +1,21 @@
 package memory
 
 import (
-	"github.com/mch735/education/work2/models/user"
 	"github.com/mch735/education/work2/storages"
+	"github.com/mch735/education/work2/user"
 )
 
-type InMemoryUserRepo struct {
+type UserRepo struct {
 	data map[string]*user.User
 }
 
-func NewInMemoryUserRepo() InMemoryUserRepo {
-	return InMemoryUserRepo{
+func NewUserRepo() *UserRepo {
+	return &UserRepo{
 		data: make(map[string]*user.User),
 	}
 }
 
-func (s InMemoryUserRepo) Save(user *user.User) error {
+func (s *UserRepo) Save(user *user.User) error {
 	_, exist := s.data[user.ID]
 	if exist {
 		return storages.ErrUserExist
@@ -26,7 +26,7 @@ func (s InMemoryUserRepo) Save(user *user.User) error {
 	return nil
 }
 
-func (s InMemoryUserRepo) FindByID(id string) (*user.User, error) {
+func (s *UserRepo) FindByID(id string) (*user.User, error) {
 	result, exist := s.data[id]
 	if !exist {
 		return nil, storages.ErrUserNotFound
@@ -35,7 +35,7 @@ func (s InMemoryUserRepo) FindByID(id string) (*user.User, error) {
 	return result, nil
 }
 
-func (s InMemoryUserRepo) DeleteByID(id string) error {
+func (s *UserRepo) DeleteByID(id string) error {
 	_, exist := s.data[id]
 	if !exist {
 		return storages.ErrUserNotFound
@@ -46,7 +46,7 @@ func (s InMemoryUserRepo) DeleteByID(id string) error {
 	return nil
 }
 
-func (s InMemoryUserRepo) FindAll() []*user.User {
+func (s *UserRepo) FindAll() []*user.User {
 	result := make([]*user.User, 0, s.Len())
 
 	for _, v := range s.data {
@@ -56,7 +56,7 @@ func (s InMemoryUserRepo) FindAll() []*user.User {
 	return result
 }
 
-func (s InMemoryUserRepo) FilterFunc(fn func(user *user.User) bool) []*user.User {
+func (s *UserRepo) FilterFunc(fn func(user *user.User) bool) []*user.User {
 	result := make([]*user.User, 0, s.Len())
 
 	for _, v := range s.data {
@@ -68,6 +68,6 @@ func (s InMemoryUserRepo) FilterFunc(fn func(user *user.User) bool) []*user.User
 	return result
 }
 
-func (s InMemoryUserRepo) Len() int {
+func (s *UserRepo) Len() int {
 	return len(s.data)
 }

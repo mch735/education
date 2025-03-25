@@ -6,15 +6,15 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/mch735/education/work2/models/user"
 	"github.com/mch735/education/work2/storages"
 	"github.com/mch735/education/work2/storages/memory"
+	"github.com/mch735/education/work2/user"
 )
 
 func TestInMemoryRepoSaveError(t *testing.T) {
 	t.Parallel()
 
-	repo := memory.NewInMemoryUserRepo()
+	repo := memory.NewUserRepo()
 
 	record1 := user.User{ID: "10", Name: "Test1", Email: "1@1.com", Role: "admin", CreatedAt: time.Now()}
 	require.NoError(t, repo.Save(&record1))
@@ -26,7 +26,7 @@ func TestInMemoryRepoSaveError(t *testing.T) {
 func TestInMemoryRepoSave(t *testing.T) {
 	t.Parallel()
 
-	repo := memory.NewInMemoryUserRepo()
+	repo := memory.NewUserRepo()
 
 	record := user.User{ID: "10", Name: "Test1", Email: "1@1.com", Role: "admin", CreatedAt: time.Now()}
 	require.NoError(t, repo.Save(&record))
@@ -35,7 +35,7 @@ func TestInMemoryRepoSave(t *testing.T) {
 func TestInMemoryRepoFindByIDError(t *testing.T) {
 	t.Parallel()
 
-	repo := memory.NewInMemoryUserRepo()
+	repo := memory.NewUserRepo()
 
 	record := user.User{ID: "10", Name: "Test1", Email: "1@1.com", Role: "admin", CreatedAt: time.Now()}
 	require.NoError(t, repo.Save(&record))
@@ -47,7 +47,7 @@ func TestInMemoryRepoFindByIDError(t *testing.T) {
 func TestInMemoryRepoFindByID(t *testing.T) {
 	t.Parallel()
 
-	repo := memory.NewInMemoryUserRepo()
+	repo := memory.NewUserRepo()
 
 	record := user.User{ID: "10", Name: "Test1", Email: "1@1.com", Role: "admin", CreatedAt: time.Now()}
 	require.NoError(t, repo.Save(&record))
@@ -59,7 +59,7 @@ func TestInMemoryRepoFindByID(t *testing.T) {
 func TestInMemoryRepoFindAll(t *testing.T) {
 	t.Parallel()
 
-	repo := memory.NewInMemoryUserRepo()
+	repo := memory.NewUserRepo()
 
 	record1 := user.User{ID: "10", Name: "Test1", Email: "1@1.com", Role: "admin", CreatedAt: time.Now()}
 	require.NoError(t, repo.Save(&record1))
@@ -74,7 +74,7 @@ func TestInMemoryRepoFindAll(t *testing.T) {
 func TestInMemoryRepoDeleteByIDError(t *testing.T) {
 	t.Parallel()
 
-	repo := memory.NewInMemoryUserRepo()
+	repo := memory.NewUserRepo()
 
 	record := user.User{ID: "10", Name: "Test1", Email: "1@1.com", Role: "admin", CreatedAt: time.Now()}
 	require.NoError(t, repo.Save(&record))
@@ -85,7 +85,7 @@ func TestInMemoryRepoDeleteByIDError(t *testing.T) {
 func TestInMemoryRepoDeleteByID(t *testing.T) {
 	t.Parallel()
 
-	repo := memory.NewInMemoryUserRepo()
+	repo := memory.NewUserRepo()
 
 	record := user.User{ID: "10", Name: "Test1", Email: "1@1.com", Role: "admin", CreatedAt: time.Now()}
 	require.NoError(t, repo.Save(&record))
@@ -96,7 +96,7 @@ func TestInMemoryRepoDeleteByID(t *testing.T) {
 func TestInMemoryRepoFilterFunc(t *testing.T) {
 	t.Parallel()
 
-	repo := memory.NewInMemoryUserRepo()
+	repo := memory.NewUserRepo()
 
 	record1 := user.User{ID: "10", Name: "Test", Email: "1@1.com", Role: "admin", CreatedAt: time.Now()}
 	require.NoError(t, repo.Save(&record1))
