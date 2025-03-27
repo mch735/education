@@ -3,6 +3,8 @@ linters:
   disable:
     - depguard
     - tenv
+    - forbidigo
+    - nlreturn
 
 linters-settings:
   varnamelen:

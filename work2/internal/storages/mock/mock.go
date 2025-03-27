@@ -3,8 +3,8 @@ package mock
 import (
 	"log"
 
-	"github.com/mch735/education/work2/storages"
-	"github.com/mch735/education/work2/user"
+	"github.com/mch735/education/work2/internal/storages"
+	"github.com/mch735/education/work2/internal/user"
 )
 
 type UserRepo struct {

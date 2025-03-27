@@ -5,10 +5,10 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/mch735/education/work2/storages"
-	"github.com/mch735/education/work2/storages/memory"
-	"github.com/mch735/education/work2/storages/mock"
-	"github.com/mch735/education/work2/user"
+	"github.com/mch735/education/work2/internal/storages"
+	"github.com/mch735/education/work2/internal/storages/memory"
+	"github.com/mch735/education/work2/internal/storages/mock"
+	"github.com/mch735/education/work2/internal/user"
 )
 
 func TestUserServiceValidateError(t *testing.T) {
