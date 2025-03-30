@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/ilyakaznacheev/cleanenv"
-	"github.com/mch735/education/work4/work4/internal/scraper"
+	"github.com/mch735/education/work4/internal/scraper"
 )
 
 func main() {
