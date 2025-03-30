@@ -1,0 +1,30 @@
+linters:
+  enable-all: true  
+  disable:
+    - depguard
+    - tenv
+    - exhaustruct
+    - nlreturn
+
+linters-settings:
+  varnamelen:
+    min-name-length: 1
+
+  govet:
+    enable-all: true
+
+  gci:
+    sections:
+      - standard
+      - default      
+      - prefix(github.com/mch735/education/work3)
+    skip-generated: true
+
+  tagliatelle:
+    case:
+      rules:
+        yaml: snake
+        env: upperSnake
+
+  lll:
+    line-length: 140
