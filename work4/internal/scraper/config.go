@@ -6,7 +6,7 @@ import (
 )
 
 type Config struct {
-	ThreadCount int           `env:"THREAD_COUNT" env-default:"10"`
+	ThreadCount int           `env:"THREAD_COUNT" env-default:"5"`
 	Timeout     time.Duration `env:"TIMEOUT"      env-default:"5s"`
 	RetryCount  int           `env:"RETRY_COUNT"  env-default:"3"`
 }
