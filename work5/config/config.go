@@ -17,7 +17,8 @@ type (
 	}
 
 	Log struct {
-		Level string `env:"LOG_LEVEL" env-default:"info"`
+		Level     string `env:"LOG_LEVEL"      env-default:"info"`
+		AddSource bool   `env:"LOG_ADD_SOURCE" env-default:"true"`
 	}
 
 	HTTP struct {
@@ -49,10 +50,9 @@ type (
 func NewConfig() (*Config, error) {
 	var conf Config
 
-	// err := cleanenv.ReadEnv(&conf)
 	err := cleanenv.ReadConfig(".env", &conf)
 	if err != nil {
-		return nil, fmt.Errorf("config error: %w", err)
+		return nil, fmt.Errorf("cleanenv.ReadConfig: %w", err)
 	}
 
 	return &conf, nil

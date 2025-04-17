@@ -2,6 +2,7 @@ package web
 
 import (
 	"encoding/json"
+	"fmt"
 	"log/slog"
 	"net/http"
 
@@ -11,10 +12,10 @@ import (
 )
 
 func Index(uc usecase.User) http.HandlerFunc {
-	return func(w http.ResponseWriter, _ *http.Request) {
-		users, err := uc.GetUsers()
+	return func(w http.ResponseWriter, r *http.Request) {
+		users, err := uc.GetUsers(r.Context())
 		if err != nil {
-			slog.Error("web - v1 - index", slog.String("error", err.Error()))
+			slog.Error(fmt.Sprintf("uc.GetUsers: %v", err))
 			errorResponse(w, "database problems", http.StatusInternalServerError)
 
 			return
@@ -26,9 +27,9 @@ func Index(uc usecase.User) http.HandlerFunc {
 
 func Show(uc usecase.User) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		user, err := uc.GetUserByID(r.PathValue("id"))
+		user, err := uc.GetUserByID(r.Context(), r.PathValue("id"))
 		if err != nil {
-			slog.Error("web - v1 - show", slog.String("error", err.Error()))
+			slog.Error(fmt.Sprintf("uc.GetUserByID: %v", err))
 			errorResponse(w, "database problems", http.StatusInternalServerError)
 
 			return
@@ -44,7 +45,7 @@ func Create(uc usecase.User) http.HandlerFunc {
 
 		err := json.NewDecoder(r.Body).Decode(&u)
 		if err != nil {
-			slog.Error("web - v1 - create", slog.String("error", err.Error()))
+			slog.Error(fmt.Sprintf("json.NewDecoder: %v", err))
 			errorResponse(w, "invalid request body", http.StatusBadRequest)
 
 			return
@@ -56,9 +57,9 @@ func Create(uc usecase.User) http.HandlerFunc {
 			Role:  u.Role,
 		}
 
-		err = uc.Create(&user)
+		err = uc.Create(r.Context(), &user)
 		if err != nil {
-			slog.Error("web - v1 - create", slog.String("error", err.Error()))
+			slog.Error(fmt.Sprintf("uc.Create: %v", err))
 			errorResponse(w, "database problems", http.StatusInternalServerError)
 
 			return
@@ -76,7 +77,7 @@ func Update(uc usecase.User) http.HandlerFunc {
 
 		err := json.NewDecoder(r.Body).Decode(&u)
 		if err != nil {
-			slog.Error("web - v1 - update", slog.String("error", err.Error()))
+			slog.Error(fmt.Sprintf("json.NewDecoder: %v", err))
 			errorResponse(w, "invalid request body", http.StatusBadRequest)
 
 			return
@@ -89,9 +90,9 @@ func Update(uc usecase.User) http.HandlerFunc {
 			Role:  u.Role,
 		}
 
-		err = uc.Update(&user)
+		err = uc.Update(r.Context(), &user)
 		if err != nil {
-			slog.Error("web - v1 - update", slog.String("error", err.Error()))
+			slog.Error(fmt.Sprintf("uc.Update: %v", err))
 			errorResponse(w, "database problems", http.StatusInternalServerError)
 
 			return
@@ -103,9 +104,9 @@ func Update(uc usecase.User) http.HandlerFunc {
 
 func Delete(uc usecase.User) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		err := uc.Delete(r.PathValue("id"))
+		err := uc.Delete(r.Context(), r.PathValue("id"))
 		if err != nil {
-			slog.Error("web - v1 - delete", slog.String("error", err.Error()))
+			slog.Error(fmt.Sprintf("uc.Delete: %v", err))
 			errorResponse(w, "database problems", http.StatusInternalServerError)
 
 			return

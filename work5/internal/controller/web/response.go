@@ -2,6 +2,7 @@ package web
 
 import (
 	"encoding/json"
+	"fmt"
 	"log/slog"
 	"net/http"
 )
@@ -20,6 +21,6 @@ func jsonResponse(w http.ResponseWriter, val any) {
 
 	err := json.NewEncoder(w).Encode(val)
 	if err != nil {
-		slog.Error("encode error", slog.String("message", err.Error()))
+		slog.Error(fmt.Sprintf("json.NewEncoder: %v", err))
 	}
 }

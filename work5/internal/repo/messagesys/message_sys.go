@@ -23,7 +23,7 @@ func New(conf *config.NATS) (*MessageSys, error) {
 
 	ns, err := opts.Connect()
 	if err != nil {
-		return nil, fmt.Errorf("nats connect error: %w", err)
+		return nil, fmt.Errorf("opts.Connect: %w", err)
 	}
 
 	return &MessageSys{ns}, nil
