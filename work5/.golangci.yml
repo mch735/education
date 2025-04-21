@@ -29,3 +29,6 @@ linters-settings:
 
   lll:
     line-length: 140
+
+  godot:
+    period: false
