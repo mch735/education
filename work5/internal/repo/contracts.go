@@ -7,6 +7,8 @@ import (
 	"github.com/mch735/education/work5/internal/entity"
 )
 
+//go:generate mockgen -source=contracts.go -destination=../usecase/mocks_repo_test.go -package=usecase_test
+
 type (
 	UserRepo interface {
 		GetUsers(ctx context.Context) ([]*entity.User, error)

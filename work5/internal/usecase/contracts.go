@@ -6,6 +6,8 @@ import (
 	"github.com/mch735/education/work5/internal/entity"
 )
 
+//go:generate mockgen -source=contracts.go -destination=./mocks_usecase_test.go -package=usecase_test
+
 type User interface {
 	GetUsers(ctx context.Context) ([]*entity.User, error)
 	GetUserByID(ctx context.Context, id string) (*entity.User, error)
