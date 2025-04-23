@@ -14,6 +14,7 @@ type (
 		PG    PG
 		NATS  NATS
 		HTTP  HTTP
+		GRPC  GRPC
 	}
 
 	Log struct {
@@ -44,6 +45,11 @@ type (
 		MaxReconnect  int           `env:"NATS_MAX_RECONNECT"  env-required:"true"`
 		ReconnectWait time.Duration `env:"NATS_RECONNECT_WAIT" env-required:"true"`
 		Timeout       time.Duration `env:"NATS_TIMEOUT"        env-required:"true"`
+	}
+
+	GRPC struct {
+		Port    int           `env:"GRPC_PORT"    env-required:"true"`
+		Timeout time.Duration `env:"GRPC_TIMEOUT" env-required:"true"`
 	}
 )
 

@@ -11,6 +11,7 @@ import (
 	"golang.org/x/sync/errgroup"
 
 	"github.com/mch735/education/work5/config"
+	usergrpc "github.com/mch735/education/work5/internal/controller/grpc"
 	"github.com/mch735/education/work5/internal/controller/web"
 	"github.com/mch735/education/work5/internal/repo/messagesys"
 	"github.com/mch735/education/work5/internal/repo/usercache"
@@ -19,7 +20,7 @@ import (
 	"github.com/mch735/education/work5/pkg/logger"
 )
 
-//nolint:nlreturn
+//nolint:nlreturn,contextcheck,funlen
 func Run(conf *config.Config) {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
@@ -59,6 +60,9 @@ func Run(conf *config.Config) {
 	server := web.NewServer(&conf.HTTP)
 	server.Handler = web.NewRouter(uc)
 
+	grpcsrv := usergrpc.NewServer(&conf.GRPC)
+	grpcsrv.RegisterServiceServer(usergrpc.NewUserServiceServer(uc))
+
 	g, c := errgroup.WithContext(ctx)
 
 	g.Go(func() error {
@@ -66,11 +70,18 @@ func Run(conf *config.Config) {
 	})
 	g.Go(func() error {
 		<-c.Done()
-		return server.Shutdown(context.Background()) //nolint:contextcheck
+		return server.Shutdown(context.Background())
 	})
 	g.Go(func() error {
 		<-c.Done()
 		return sub.Unsubscribe()
+	})
+	g.Go(func() error {
+		return grpcsrv.ListenAndServe()
+	})
+	g.Go(func() error {
+		<-c.Done()
+		return grpcsrv.Shutdown()
 	})
 
 	err = g.Wait()
