@@ -10,3 +10,5 @@
 - `go run cmd/app/main.go` - запуск приложения
 - `go test -tags imtegration ./...` - запуск интеграционных тестов (осуществлять после запуска основного приложения)
 - `go test ./...` - запуск usecase тестов
+- `go run cmd/http/main.go` - запуск http клиента (поддерживаемые команды: create, get, del, list, help)
+- `go run cmd/grpc/main.go` - запуск grpc клиента (поддерживаемые команды: create, get, del, list, help)
